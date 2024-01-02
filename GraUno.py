@@ -71,6 +71,7 @@ class UnoCardWild:
                     fulldeck.remove(card)
                 else:
                     print("Brak kart do pobrania z talii.")
+                    break
             new_color = input("Jaki ma być nowy kolor ? ")
             barowa_lada.karty_na_stole[-1].color = new_color
 @dataclass
@@ -105,6 +106,7 @@ class Player:
                     fulldeck.remove(card)
                 else:
                     print("Brak kart do pobrania z talii.")
+                    break
 
     def __str__(self) -> str:
         return "{name}"
@@ -195,7 +197,7 @@ def papierkamiennozyce():
         os.system('cls')
         print(f"Ja wybrałem {wybor_gracza2} a ty {wybor_gracza1}")
         sleep(1)
-        print('Wygrałeś, zaczynasz.')
+        print('Ok, zaczynaj.')
         print("")
         return wynik
     elif wynik == 1:
@@ -203,7 +205,7 @@ def papierkamiennozyce():
         print(f"Ja wybrałem {wybor_gracza2} a ty {wybor_gracza1}")
         sleep(2)
         print("")
-        print('HA! wygrałem czyli zaczynam!')
+        print('HA! Wygrałem czyli zaczynam!')
         return wynik
     
 def new_game_multiplayer():
@@ -216,6 +218,7 @@ def new_game_multiplayer():
            return list_of_players
    x = [player.name for player in list_of_players]
    print(f'Witamy graczy {", ".join(x)} przy stoliku')
+   # prace trwają
 
 def is_int(zmienna):
     wzór = r'^\d+$'
@@ -304,92 +307,113 @@ if answer.lower() == 't':
     print("W talii z której będziemy dobierać karty znajduja się też karty specialne które wprowadzają pewne zmiany ale to już zrozumiesz w trakcie gry...")
 elif answer.lower() == 'n':
     print("No to gramy!!!")
-print("")
-print('Pierwsze ustalmy kto będzie zaczynał, zagramy w "Papier, Kamien i Nożyce"')
-print("")
-sleep(2)
-print("Jeśli wygram, to ja zacznę")
-graczmove = papierkamiennozyce()
 
-if len(fulldeck) > 0:
-    while len(gracz.reka.eq) > 0 or len(przeciwnik.reka.eq) > 0:   
-        if graczmove % 2 == 0:
-            print("")
-            print("ręka gracza:")
-            print(gracz.reka)
-            print("")
-            print("")
-            barowa_lada.display_last_card()
-            print(f" twój przeciwnik ma {len(przeciwnik.reka.eq)} kart w ręce.")
-            print("")
-            print("co byś chciał zrobić ?")
-            while True:
-                move = input("[1] Zagrać kartę \n[2] Dobrać kartę\n Wybieram: ")
-                imove = is_int(move)
-                is_int(move)
-                break
-            if imove == 1:    
-                gracz.play_card()
-                graczmove += 1
-                os.system('cls')
-            if imove == 2:
-                os.system('cls')
-                gracz.draw_card(gracz)
-                graczmove += 1            
-        else:
-            card_to_play = None
-            last_card = barowa_lada.karty_na_stole[-1]
-            for card in przeciwnik.reka.eq:
-                if card.color == last_card.color or card.name == last_card.name or card.color == ".Wild":
-                    card_to_play = card
+def new_game_AI(graczmove):
+    if len(fulldeck) > 0:
+        while len(gracz.reka.eq) > 0 or len(przeciwnik.reka.eq) > 0:   
+            if graczmove % 2 == 0:
+                print("")
+                print("ręka gracza:")
+                print(gracz.reka)
+                print("")
+                print("")
+                barowa_lada.display_last_card()
+                print(f" twój przeciwnik ma {len(przeciwnik.reka.eq)} kart w ręce.")
+                print("")
+                print("co byś chciał zrobić ?")
+                while True:
+                    move = input("[1] Zagrać kartę \n[2] Dobrać kartę\n Wybieram: ")
+                    imove = is_int(move)
+                    is_int(move)
                     break
-            
-            if card_to_play:
-                barowa_lada.karty_na_stole.append(card_to_play)
-                
-                if isinstance(card_to_play, (UnoCardSpecial, UnoCardWild)):
-                    if card_to_play.name == "ChangeColor":
-                        new_color = random.choice(colors)
-                        barowa_lada.karty_na_stole[-1].color = new_color
-                    if card_to_play.name == "+4":
-                        for _ in range(4):
-                            if len(fulldeck) > 0:
-                                card = fulldeck[0]
-                                gracz.reka.eq.append(card)
-                                print(f"dobrałeś kartę {card}")
-                                fulldeck.remove(card)
-                                new_color = random.choice(colors)
-                                barowa_lada.karty_na_stole[-1].color = new_color
-                            else:
-                                print("Brak kart do pobrania z talii.")
-                    if card_to_play.name == "+2":
-                        for _ in range(2):
-                            if len(fulldeck) > 0:
-                                card = fulldeck[0]
-                                gracz.reka.eq.append(card)
-                                print(f"dobrałeś kartę {card}")
-                                fulldeck.remove(card)
-                            else:
-                                print("Brak kart do pobrania z talii.")
-                        
-                przeciwnik.reka.eq.remove(card_to_play)
-                
-                print(f"Jerry zagrał kartę: {card_to_play}")
+                if imove == 1:    
+                    gracz.play_card()
+                    graczmove += 1
+                    os.system('cls')
+                if imove == 2:
+                    os.system('cls')
+                    gracz.draw_card(gracz)
+                    graczmove += 1            
             else:
-                card = fulldeck[0]
-                przeciwnik.reka.eq.append(card)
-                fulldeck.remove(card)
-                print("Jerry dobrał kartę")
+                card_to_play = None
+                last_card = barowa_lada.karty_na_stole[-1]
+                for card in przeciwnik.reka.eq:
+                    if card.color == last_card.color or card.name == last_card.name or card.color == ".Wild":
+                        card_to_play = card
+                        break
+                
+                if card_to_play:
+                    print(f"Jerry miał {len(przeciwnik.reka.eq)} kart.")
+                    print()
+                    print(f"Ale zagrał kartę: {card_to_play}")
+                    barowa_lada.karty_na_stole.append(card_to_play)
+                    
+                    if isinstance(card_to_play, (UnoCardSpecial, UnoCardWild)):
+                        if card_to_play.name == "ChangeColor":
+                            new_color = random.choice(colors)
+                            barowa_lada.karty_na_stole[-1].color = new_color
+                        if card_to_play.name == "+4":
+                            for _ in range(4):
+                                if len(fulldeck) > 0:
+                                    card = fulldeck[0]
+                                    gracz.reka.eq.append(card)
+                                    print(f"dobrałeś kartę {card}")
+                                    fulldeck.remove(card)
+                                    new_color = random.choice(colors)
+                                    barowa_lada.karty_na_stole[-1].color = new_color
+                                else:
+                                    print("Brak kart do pobrania z talii.")
+                                    break                              
+                        if card_to_play.name == "+2":
+                            for _ in range(2):
+                                if len(fulldeck) > 0:
+                                    card = fulldeck[0]
+                                    gracz.reka.eq.append(card)
+                                    print(f"dobrałeś kartę {card}")
+                                    fulldeck.remove(card)
+                                else:
+                                    print("Brak kart do pobrania z talii.")
+                                    break
+                            
+                    przeciwnik.reka.eq.remove(card_to_play)
+                    
+                else:
+                    print(f"Jerry miał {len(przeciwnik.reka.eq)} kart.")
+                    print()
+                    print("Ale dobrał kartę")
+                    card = fulldeck[0]
+                    przeciwnik.reka.eq.append(card)
+                    fulldeck.remove(card)
+                    
+                graczmove += 1
 
-            graczmove += 1
 
+            if len(gracz.reka.eq) == 0:
+                print("koniec gry, wygrałeś")
+                break
+            if len(przeciwnik.reka.eq) == 0:
+                print("koniec gry, przegrałeś")
+                break
+    else:
+        print("Mamy Remis !")
+        print("udało się wyczerpać wszystkie karty na stosie, i nie można już rozstrzygnąć kto wygrał te partię.")
 
-        if len(gracz.reka.eq) == 0:
-            print("koniec gry, wygrałeś")
-            break
-        if len(przeciwnik.reka.eq) == 0:
-            print("koniec gry, przegrałeś")
-            break
-else:
-    print("Mamy Remis !")
-    print("udało się wyczerpać wszystkie karty na stosie, i nie można już rozstrzygnąć kto wygrał te partię.")
+odp = "Y"
+while odp == "Y":
+    print("")
+    print('Pierwsze ustalmy kto będzie zaczynał, zagramy w "Papier, Kamien i Nożyce"')
+    print("")
+    sleep(2)
+    print("Jeśli wygram, to zacznę.")
+    graczmove = papierkamiennozyce()
+    try:
+        new_game_AI(graczmove)
+    except IndexError:
+        print("Jerry: brakło kart do dobrania. Wygląda na to że mamy remis :)")
+    print("Czy chcesz zagrać jeszcze raz ?")
+    odp = input("wpisz [Y] lub [N]: ")
+    odp = odp.capitalize().strip()
+    if odp != "Y":
+        break
+        
+print("do zobaczenia podróżniku :)!")
