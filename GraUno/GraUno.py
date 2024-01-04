@@ -1,3 +1,8 @@
+__name__ = "GraUno.py"
+__author__ = "Jeremiasz Talik"
+__system__ = "Windows"
+__status__ = "work in progress"
+
 from dataclasses import dataclass, field
 import random
 from random import shuffle
@@ -7,6 +12,9 @@ import re
 
 @dataclass
 class UnoCard:
+    """_summary_
+    UnoCard class is the basic element of the game
+    """
     name: str
     color: str
 
@@ -15,12 +23,18 @@ class UnoCard:
         return card
     
     def __lt__(self, other):
+        """_summary_
+        color comparison method. implemented to create a clearer view during gameplay
+        """
         if self.color != other.color:
             return self.color < other.color
         return self.name < other.name
 
 @dataclass
 class UnoCardSpecial:
+    """_summary_
+    UnoCardSpecial class is one of elements of the game, which has an additional impact on the gameplay
+    """
     name: str
     color: str
     card_function: str
@@ -38,6 +52,9 @@ class UnoCardSpecial:
         if self.name == "Pułapka":
             pass
         if self.name == "+2":
+            """_summary_
+            Method that adds two additional cards from the deck to the opponent
+            """
             for _ in range(2):
                 if len(fulldeck) > 0:
                     card = fulldeck[0]
@@ -46,6 +63,13 @@ class UnoCardSpecial:
    
 @dataclass
 class UnoCardWild:
+    """_summary_
+    UnoCardWild class is one of elements of the game, which has an additional impact on the gameplay
+    - stronger then UnoCardSpecial
+    This type of card have unique color, that matches all others colors
+
+    After playing this card, the player will change color of this card to the one of 4 that he choose
+    """
     name: str
     card_function: str
     color: str 
@@ -76,9 +100,19 @@ class UnoCardWild:
             barowa_lada.karty_na_stole[-1].color = new_color
 @dataclass
 class Hand:
+    """_summary_
+    structure for entities, gives the opportunity to have cards.
+    In other words, it stores card information in a cache.
+    """
     eq: list = field(default_factory=list)
     x = 0
     def numbered_cards(self) -> str:
+        """_summary_
+        numbers the cards in numerical order, making them easier to recall during the game.
+
+        Returns:
+            str: 1. 2. 3. etc...
+        """
         cards_with_numbers = [f"{x + 1}. {card}" for x , card in enumerate(self.eq)]
         return "\n".join(cards_with_numbers)
 
@@ -87,10 +121,16 @@ class Hand:
 
 @dataclass
 class Player:
+    """_summary_
+    The class used by players allows them to make moves
+    """
     name: str
     reka: Hand = field(default_factory=Hand)
 
     def deal_initial_hand(self, type_of_deck, number_of_initial_cards=6):
+            """_summary_
+            Deals the initial hand of cards, defaults 6 cards
+            """
             for _ in range(number_of_initial_cards):
                 card = type_of_deck[0]
                 self.reka.eq.append(card)
@@ -98,6 +138,9 @@ class Player:
             self.reka.eq = sorted(self.reka.eq, key=lambda card: (card.color, card.name))
 
     def draw_card(self, podmiot):
+            """_summary_
+            allows a player to draw one card when he is not able to play any card in his hand
+            """
             for _ in range(1):
                 if len(fulldeck) > 0:
                     card = fulldeck[0]
@@ -112,6 +155,10 @@ class Player:
         return "{name}"
     
     def play_card(self):
+        """_summary_
+        Allows a player to play a card he choose, when the card meets the play requirements.
+        If card have any special properties, they will be activated.
+        """
         try:
             choice = input("Którą kartę chcesz zagrać? ")
             int_choice = int(choice)
@@ -137,6 +184,10 @@ class Player:
 
 @dataclass
 class Table:
+    """_summary_
+    The field on which the game takes place. Defaults should have one card.
+    unlike other entities, it always displays the single card most recently added to the stack
+    """
     karty_na_stole: Hand = field(default_factory=list)
 
     def __str__ (self) -> str:
@@ -153,6 +204,12 @@ class Table:
         print(f' Karta na szczycie: <({card.name}) [{card.color}]>')
 
 def papierkamiennozyce():
+    """_summary_
+    Basic "Rock, paper, scissors" game.
+    A method designed to determine who starts the game
+
+    Returns: int(2) if player is the winner or the game ended by draw. OR int(1) otherwise
+    """
     opcje = [1, 2, 3]
 
     def pobierz_wybor(gracz):
@@ -208,19 +265,13 @@ def papierkamiennozyce():
         print('HA! Wygrałem czyli zaczynam!')
         return wynik
     
-def new_game_multiplayer():
-   list_of_players = []
-   how_many_players = int(input("Ilu będzie graczy ?: "))
-   for x in range(how_many_players):
-       y = Player(input(f"podaj nazwę gracza {x+1}: "))
-       list_of_players.append(y)
-       if x >= len(list_of_players):
-           return list_of_players
-   x = [player.name for player in list_of_players]
-   print(f'Witamy graczy {", ".join(x)} przy stoliku')
-   # prace trwają
-
 def is_int(zmienna):
+    """_summary_
+
+    method that checks whether the value of a variable is an integer
+
+    Returns: integer
+    """
     wzór = r'^\d+$'
     spr = re.match(wzór, zmienna)
     if spr:
