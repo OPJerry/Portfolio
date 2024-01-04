@@ -85,8 +85,20 @@ class UnoCardWild:
     
     def power(self):
         if self.name == "ChangeColor":
-            new_color = input("Jaki ma być nowy kolor ? ")
-            barowa_lada.karty_na_stole[-1].color = new_color
+            valid_number = ("1","2","3","4")
+            new_color = input("[1] Blue\n[2] Red\n[3] Green\n[4] Yellow\n Jaki ma być nowy kolor ? ")
+            if new_color in valid_number:
+                if new_color =="1": 
+                    new_color="Blue"
+                if new_color =="2": 
+                    new_color="Red"
+                if new_color =="3": 
+                    new_color="Green"
+                if new_color =="4": 
+                    new_color="Yellow"
+                barowa_lada.karty_na_stole[-1].color = new_color
+            else:
+                print("Nieprawidłowy wybór")
         if self.name == "+4":
             for _ in range(4):
                 if len(fulldeck) > 0:
@@ -96,8 +108,20 @@ class UnoCardWild:
                 else:
                     print("Brak kart do pobrania z talii.")
                     break
-            new_color = input("Jaki ma być nowy kolor ? ")
-            barowa_lada.karty_na_stole[-1].color = new_color
+            valid_number = ("1","2","3","4")
+            new_color = input("[1] Blue\n[2] Red\n[3] Green\n[4] Yellow\n Jaki ma być nowy kolor ? ")
+            if new_color in valid_number:
+                if new_color =="1": 
+                    new_color="Blue"
+                if new_color =="2": 
+                    new_color="Red"
+                if new_color =="3": 
+                    new_color="Green"
+                if new_color =="4": 
+                    new_color="Yellow"
+                barowa_lada.karty_na_stole[-1].color = new_color
+            else:
+                print("Nieprawidłowy wybór")
 @dataclass
 class Hand:
     """_summary_
@@ -252,14 +276,14 @@ def papierkamiennozyce():
 
     if wynik == 2:
         os.system('cls')
-        print(f"Ja wybrałem {wybor_gracza2} a ty {wybor_gracza1}")
+        print(f"Ty wybrałeś {wybor_gracza1} a ja {wybor_gracza2}")
         sleep(1)
         print('Ok, zaczynaj.')
         print("")
         return wynik
     elif wynik == 1:
         os.system('cls')
-        print(f"Ja wybrałem {wybor_gracza2} a ty {wybor_gracza1}")
+        print(f"Ty wybrałeś {wybor_gracza1} a ja {wybor_gracza2}")
         sleep(2)
         print("")
         print('HA! Wygrałem czyli zaczynam!')
@@ -310,9 +334,6 @@ for x in range(4):
     deck_of_Wild_cards.append(wild1)
     deck_of_Wild_cards.append(wild2)
 
-fulldeck = deck_of_Wild_cards + deck_of_special_cards + deck_of_normal_cards
-shuffle(fulldeck)
-
 print("Witaj podróżniku!")
 sleep(1)
 print("Mam na imię Jerry i jestem tutaj barmanem.")
@@ -322,42 +343,13 @@ sleep(1)
 print("Jak masz na imię: ")
 print("")
 gracz = Player(name=input("-> na imię mi: ").strip().capitalize())
-przeciwnik = Player(name="Jerry")
-sleep(0.5)
+graczname = gracz.name
 print(f'Witaj {gracz.name}, pozwól że rozdam nam karty')
 sleep(2)
+print("")
 print(f'Zazwyczaj mamy tu więcej osób ale dziś gramy sami.')
-barowa_lada = Table()
-gracz.deal_initial_hand(fulldeck)
-przeciwnik.deal_initial_hand(fulldeck)
-barowa_lada.deal_initial_Table()
-sleep(3)
-print("")
-print("[Jerry tasuje karty i rozdaje wam początkowe rozdanie]")
-print("")
-sleep(4)
-print("oto twoje karty, przeglądnij je ale mi nie pokazuj.")
-print("")
-sleep(2)
-print(gracz.reka)
-sleep(2)
-print("")
-print("Wyjaśnić ci zasady?")
-while True:
-    answer = input('-> Wpisz "T" lub "N": ')
-    if answer.lower() in {'t', 'n'}:
-        break
-print("")   
-if answer.lower() == 't':
-    print("Zasady są proste:")
-    print("W grze chodzi o to aby pozbyć się wszystkich kart z ręki zanim zrobi to przeciwnik")
-    print("na stole zawsze jest jakaś karta z talii, w jednej turze możesz umieścić jedną kartę z twojej ręki")
-    print("ale tylko pod warunkiem że karta ma taki sam kolor, lub numer jak karta która jest na szczycie stołu.")
-    print('Niektóre karty zamiast zwykłego koloru mają kolor "Wild". Wild jest kolorem uniwersalnym i pasuej do każdego')
-    print("Jeżeli nie możesz położyć na stół żadnej karty, musisz dobrać dodatkową kartę z talii - w ramach kary.")
-    print("W talii z której będziemy dobierać karty znajduja się też karty specialne które wprowadzają pewne zmiany ale to już zrozumiesz w trakcie gry...")
-elif answer.lower() == 'n':
-    print("No to gramy!!!")
+sleep(1.5)
+
 
 def new_game_AI(graczmove):
     if len(fulldeck) > 0:
@@ -451,6 +443,44 @@ def new_game_AI(graczmove):
 
 odp = "Y"
 while odp == "Y":
+    fulldeck = deck_of_normal_cards + deck_of_special_cards + deck_of_Wild_cards
+    shuffle(fulldeck)
+    gracz = Player(name=graczname)
+    przeciwnik = Player(name="Jerry")
+    barowa_lada = Table()
+    print("")
+    print("[Jerry tasuje karty i rozdaje wam początkowe rozdanie]")
+    gracz.deal_initial_hand(fulldeck)
+    przeciwnik.deal_initial_hand(fulldeck)
+    barowa_lada.deal_initial_Table()
+    print("")
+    sleep(4)
+    print("oto twoje karty, przeglądnij je ale mi nie pokazuj.")
+    print("")
+    sleep(2)
+    print(gracz.reka)
+    sleep(2)
+    print("")
+    print("Wyjaśnić ci zasady?")
+    while True:
+        answer = input('-> Wpisz "Y" lub "N": ')
+        if answer.lower() in {'y', 'n'}:
+            break
+    if answer.lower() == 'y':
+        print("Zasady są proste:")
+        print("W grze chodzi o to aby pozbyć się wszystkich kart z ręki zanim zrobi to przeciwnik")
+        print("na stole zawsze jest jakaś karta z talii, w jednej turze możesz umieścić jedną kartę z twojej ręki")
+        print("ale tylko pod warunkiem że karta ma taki sam kolor, lub numer jak karta która jest na szczycie stołu.")
+        print('Niektóre karty zamiast zwykłego koloru mają kolor "Wild". Wild jest kolorem uniwersalnym i pasuej do każdego')
+        print("Jeżeli nie możesz położyć na stół żadnej karty, musisz dobrać dodatkową kartę z talii - w ramach kary.")
+        print("W talii z której będziemy dobierać karty znajduja się też karty specialne które wprowadzają pewne zmiany ale to już zrozumiesz w trakcie gry...")
+        print("")
+        print("W trakcie rozgrywki posługujemy się tylko liczbami całkowitymi, przypisanymi do odpowiedzi")
+        print('Oraz tylko w niektrych przypadkach literami "Y" lub "N"')
+        print('Zawsze udzielamy jednej odpowiedzi jednocześnie, potwierdzając ją klawiszem "enter"')
+    elif answer.lower() == 'n':
+        print("No to gramy!!!")
+    
     print("")
     print('Pierwsze ustalmy kto będzie zaczynał, zagramy w "Papier, Kamien i Nożyce"')
     print("")
@@ -460,6 +490,7 @@ while odp == "Y":
     try:
         new_game_AI(graczmove)
     except IndexError:
+        print("")
         print("Jerry: brakło kart do dobrania. Wygląda na to że mamy remis :)")
     print("Czy chcesz zagrać jeszcze raz ?")
     odp = input("wpisz [Y] lub [N]: ")
