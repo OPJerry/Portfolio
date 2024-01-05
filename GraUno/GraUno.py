@@ -2,6 +2,10 @@ __name__ = "GraUno.py"
 __author__ = "Jeremiasz Talik"
 __system__ = "Windows"
 __status__ = "work in progress"
+"""_requirements_
+to be able to run the program correctly, type in terminal:
+pip install mysql-connector-python
+"""
 
 from dataclasses import dataclass, field
 import random
@@ -9,6 +13,7 @@ from random import shuffle
 from time import sleep
 import os
 import re
+import mysql.connector
 
 @dataclass
 class UnoCard:
@@ -184,8 +189,13 @@ class Player:
         If card have any special properties, they will be activated.
         """
         try:
-            choice = input("Którą kartę chcesz zagrać? ")
-            int_choice = int(choice)
+            while True:
+                choice = input("Którą kartę chcesz zagrać? ")
+                try:
+                    int_choice = int(choice.strip())
+                    break
+                except ValueError:
+                    print("@@@ Nieprawidłowy wybór. Wpisuj tylko liczby całkowite @@@")
             int_choice -= 1
             card = self.reka.eq[int_choice]
 
@@ -334,6 +344,14 @@ for x in range(4):
     deck_of_Wild_cards.append(wild1)
     deck_of_Wild_cards.append(wild2)
 
+MySQL = mysql.connector.connect(
+  host="sql8.freesqldatabase.com",
+  user="sql8674916",
+  password="D7CCT9FHFN",
+  database="sql8674916")
+
+cursor = MySQL.cursor()
+
 print("Witaj podróżniku!")
 sleep(1)
 print("Mam na imię Jerry i jestem tutaj barmanem.")
@@ -433,6 +451,17 @@ def new_game_AI(graczmove):
 
             if len(gracz.reka.eq) == 0:
                 print("koniec gry, wygrałeś")
+                x = len(barowa_lada.karty_na_stole)
+                y = len(przeciwnik.reka.eq)
+                z = x + y + y
+                user_name = graczname
+                user_scoring = z
+                sql = "INSERT INTO users (user_name, user_scoring) VALUES (%s, %s)"
+                val = (user_name, user_scoring)
+
+                cursor.execute(sql, val)
+                MySQL.commit()
+                print(f"dodano cie do rankingu z wynikiem: {user_scoring}.")
                 break
             if len(przeciwnik.reka.eq) == 0:
                 print("koniec gry, przegrałeś")
