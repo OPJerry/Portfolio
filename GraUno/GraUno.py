@@ -312,7 +312,18 @@ def is_int(zmienna):
         return (int(spr.group()))
     else:
         return None
-    
+
+def ranking():
+    print("")
+    print("   TOP 5 SCORE")
+    sql = "SELECT user_name, user_scoring FROM users ORDER BY user_scoring DESC LIMIT 5"
+    cursor.execute(sql)
+    results_of_cursor = cursor.fetchall()
+    x = 1
+    for row in results_of_cursor:
+        print(f"{x}. {row}")
+        x += 1
+
 deck = [str(i) for i in range(10)]
 colors = ['Blue', 'Red', 'Green', 'Yellow']
 deck_of_normal_cards = []
@@ -351,22 +362,38 @@ MySQL = mysql.connector.connect(
   database="sql8674916")
 
 cursor = MySQL.cursor()
-
-print("Witaj podróżniku!")
-sleep(1)
-print("Mam na imię Jerry i jestem tutaj barmanem.")
-sleep(1.5)
-print('zagrajmy w tutejszą odmianę "Uno"')
-sleep(1)
-print("Jak masz na imię: ")
 print("")
-gracz = Player(name=input("-> na imię mi: ").strip().capitalize())
-graczname = gracz.name
-print(f'Witaj {gracz.name}, pozwól że rozdam nam karty')
-sleep(2)
-print("")
-print(f'Zazwyczaj mamy tu więcej osób ale dziś gramy sami.')
-sleep(1.5)
+print("Witaj w Jaskini Jerrego!")
+print(f"(⁠☞⁠ ͡⁠°⁠ ͜⁠ʖ⁠ ͡⁠°⁠)⁠☞ ~Najlepsze trunki, magia w powietrzu i niezapomniane gry w UNO~\n")
+print("[1] Nowa gra")
+print("[2] Ranking zwycięzców")
+while True:
+    startodp = input("Wybierz opcje: ")
+    if startodp == '1':
+        os.system('cls')
+        print("Witaj podróżniku!")
+        sleep(1)
+        print("Mam na imię Jerry i jestem tutaj barmanem.")
+        sleep(1.5)
+        print('zagrajmy w tutejszą odmianę "Uno"')
+        sleep(1)
+        print("Jak masz na imię: ")
+        print("")
+        gracz = Player(name=input("-> na imię mi: ").strip().capitalize())
+        graczname = gracz.name
+        print(f'Witaj {gracz.name}, pozwól że rozdam nam karty')
+        sleep(2)
+        print("")
+        print(f'Zazwyczaj mamy tu więcej osób ale dziś gramy sami.')
+        sleep(1.5)
+        break
+    if startodp == '2':
+        ranking()
+        print("")
+        print("[1] Nowa gra")
+        print("[2] Ranking zwycięzców")
+    else:
+        print("Nieprawidłowy wybór")
 
 
 def new_game_AI(graczmove):
@@ -470,8 +497,8 @@ def new_game_AI(graczmove):
         print("Mamy Remis !")
         print("udało się wyczerpać wszystkie karty na stosie, i nie można już rozstrzygnąć kto wygrał te partię.")
 
-odp = "Y"
-while odp == "Y":
+odp = 1
+while odp == 1:
     fulldeck = deck_of_normal_cards + deck_of_special_cards + deck_of_Wild_cards
     shuffle(fulldeck)
     gracz = Player(name=graczname)
