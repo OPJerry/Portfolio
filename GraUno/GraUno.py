@@ -127,6 +127,7 @@ class UnoCardWild:
                 barowa_lada.karty_na_stole[-1].color = new_color
             else:
                 print("Nieprawidłowy wybór")
+
 @dataclass
 class Hand:
     """_summary_
